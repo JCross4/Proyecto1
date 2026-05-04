@@ -40,6 +40,12 @@ public abstract class Estructura {
     public void setResistenciaMaxima(int resistenciaMaxima) {
         this.resistenciaMaxima = resistenciaMaxima;
     }
+    public boolean isDestruida() {
+        return destruida;
+    }
+    public void setDestruida(boolean destruida) {
+        this.destruida = destruida;
+    }
 
     
     

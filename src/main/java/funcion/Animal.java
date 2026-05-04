@@ -40,6 +40,12 @@ public abstract class Animal {
     public void setFuerzaAtaque(int fuerzaAtaque) {
         this.fuerzaAtaque = fuerzaAtaque;
     }
+    public boolean isVivo() {
+        return vivo;
+    }
+    public void setVivo(boolean vivo) {
+        this.vivo = vivo;
+    }
     
 
 }
