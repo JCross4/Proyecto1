@@ -161,6 +161,7 @@ public class Aldea {
         //Ciclo principal de la simulación
         while (cicloActual <= MAX_CICLOS) {
             //TODO Realizar acciones segun el orden determinado
+            ventana.actualizarRecursos();
             System.out.println("Ciclo " + cicloActual);
             System.out.println("Personajes: " + personajes);
             System.out.println("Torres: " + torres);
@@ -224,6 +225,83 @@ public class Aldea {
     public void setVentana(VentanaPrincipal ventana) {
         this.ventana = ventana;
     }
+
+    public int getCicloActual() {
+        return cicloActual;
+    }
+
+    public int getMaderaDisponible() {
+        return maderaDisponible;
+    }
+
+    public void setMaderaDisponible(int maderaDisponible) {
+        this.maderaDisponible = maderaDisponible;
+    }
+
+    public int getComidaVegetalDisponible() {
+        return comidaVegetalDisponible;
+    }
+
+    public void setComidaVegetalDisponible(int comidaVegetalDisponible) {
+        this.comidaVegetalDisponible = comidaVegetalDisponible;
+    }
+
+    public int getComidaAnimalDisponible() {
+        return comidaAnimalDisponible;
+    }
+
+    public void setComidaAnimalDisponible(int comidaAnimalDisponible) {
+        this.comidaAnimalDisponible = comidaAnimalDisponible;
+    }
+
+    public Cerca getCercaPrincipal() {
+        return cercaPrincipal;
+    }
+
+    public void setCercaPrincipal(Cerca cercaPrincipal) {
+        this.cercaPrincipal = cercaPrincipal;
+    }
+
+    public ArrayList<Personaje> getPersonajes() {
+        return personajes;
+    }
+
+    public void setPersonajes(ArrayList<Personaje> personajes) {
+        this.personajes = personajes;
+    }
+
+    public ArrayList<TorreDefensa> getTorres() {
+        return torres;
+    }
+
+    public void setTorres(ArrayList<TorreDefensa> torres) {
+        this.torres = torres;
+    }
+
+    public ArrayList<Animal> getAnimalesActivos() {
+        return animalesActivos;
+    }
+
+    public void setAnimalesActivos(ArrayList<Animal> animalesActivos) {
+        this.animalesActivos = animalesActivos;
+    }
+
+    public ArrayList<Parcela> getParcelasCultivo() {
+        return parcelasCultivo;
+    }
+
+    public void setParcelasCultivo(ArrayList<Parcela> parcelasCultivo) {
+        this.parcelasCultivo = parcelasCultivo;
+    }
+
+    public int getArbolesDisponibles() {
+        return arbolesDisponibles;
+    }
+
+    public void setArbolesDisponibles(int arbolesDisponibles) {
+        this.arbolesDisponibles = arbolesDisponibles;
+    }
+
 
 
 

@@ -21,5 +21,6 @@ public class Proyecto1 {
         Aldea aldea = new Aldea();
         aldea.getVentana().setVisible(true);
         aldea.iniciarSimulacion();
+        
     }
 }
