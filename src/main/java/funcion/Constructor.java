@@ -1,9 +1,11 @@
 package funcion;
 
+import java.awt.Point;
+
 public class Constructor extends Personaje {
 
-    public Constructor(String nombre, int posicion, Aldea aldea) {
-        super(nombre, posicion, "constructor", aldea);
+    public Constructor(String nombre, Aldea aldea) {
+        super(nombre,"constructor", aldea);
         //TODO Auto-generated constructor stub
     }
 
@@ -16,6 +18,13 @@ public class Constructor extends Personaje {
     @Override
     public void realizarAccion() {
         // TODO realiza accion específica
+        /*1. Si la cerca tiene resistencia menor a 100 y hay al menos 5 unidades de madera, 
+repara la cerca.  
+2. Si la cerca está en 100 y existe alguna torre con resistencia menor a su máximo y 
+hay al menos 4 unidades de madera, repara una torre.  
+3. Si la cerca está en 100, todas las torres están al máximo y la aldea tiene menos de 3 
+torres, construye una nueva torre si hay al menos 20 unidades de madera.  
+4. Si ninguna condición anterior se cumple, descansa.  */
         throw new UnsupportedOperationException("Unimplemented method 'realizarAccion'");
     }
 
@@ -34,9 +43,41 @@ public class Constructor extends Personaje {
     @Override
     public void determinarObjetivo() {
         // TODO Auto-generated method stub
-        getAldea().obtenerTorreCercana(this);
-        System.out.println("Constructor " + getNombre() + " determina objetivo: " + getObjetivo());
-        throw new UnsupportedOperationException("Unimplemented method 'determinarObjetivo'");
+        /*1. Si la cerca tiene resistencia menor a 100 y hay al menos 5 unidades de madera, 
+repara la cerca.  
+2. Si la cerca está en 100 y existe alguna torre con resistencia menor a su máximo y 
+hay al menos 4 unidades de madera, repara una torre.  
+3. Si la cerca está en 100, todas las torres están al máximo y la aldea tiene menos de 3 
+torres, construye una nueva torre si hay al menos 20 unidades de madera.  
+4. Si ninguna condición anterior se cumple, descansa.  */
+        TorreDefensa torreParaReparar = null;
+        for (TorreDefensa torre : this.getAldea().getTorres()) {
+            if (torre.getResistenciaActual() < torre.getResistenciaMaxima()) {
+                // Objetivo: reparar torre
+                torreParaReparar = torre;
+            }
+        }
+        if (this.getAldea().getCercaPrincipal().getResistenciaActual() < 100 && this.getAldea().getMaderaDisponible() >= 5 && this.getEnergia() >= 20) {
+            // Objetivo: reparar cerca
+            this.setObjetivo(this.getAldea().getCercaPrincipal().getLabelGUI().getLocation());
+            setAccionActual("reparar cerca");
+            System.out.println("Constructor " + this.getNombre() + " va a reparar la cerca.");
+        } else if (this.getAldea().getCercaPrincipal().getResistenciaActual() == 100 && torreParaReparar != null && this.getAldea().getMaderaDisponible() >= 4 && this.getEnergia() >= 20) {
+            // Objetivo: reparar torre
+            this.setObjetivo(torreParaReparar.getLabelGUI().getLocation());
+            setAccionActual("reparar torre");
+            System.out.println("Constructor " + this.getNombre() + " va a reparar la torre " + torreParaReparar.getNombre() + ".");
+        } else if (this.getAldea().getCercaPrincipal().getResistenciaActual() == 100 && torreParaReparar == null && this.getAldea().getTorres().size() < 3 && this.getAldea().getMaderaDisponible() >= 20 && this.getEnergia() >= 20) {
+            // Objetivo: construir nueva torre
+            this.setObjetivo(new Point(60*this.getAldea().getTorres().size(), 60));
+            setAccionActual("construir torre");
+            System.out.println("Constructor " + this.getNombre() + " va a construir una nueva torre.");
+        } else {
+            // Objetivo: descansar
+            this.setObjetivo(getLabelGUI().getLocation());
+            setAccionActual("descansar");
+            System.out.println("Constructor " + this.getNombre() + " va a descansar.");
+        }
     }
 
 

@@ -4,8 +4,13 @@
  */
 package gui;
 
+import javax.swing.BorderFactory;
+
 import funcion.Aldea;
+import funcion.Animal;
+import funcion.Parcela;
 import funcion.Personaje;
+import funcion.TorreDefensa;
 
 /**
  *
@@ -14,7 +19,7 @@ import funcion.Personaje;
 public class VentanaPrincipal extends javax.swing.JFrame {
     
     private Aldea aldea;
-    private final int LABEL_SIZE = 20;
+    private final int LABEL_SIZE = 30;
 
     /**
      * Creates new form VentanaPrincipal2
@@ -38,25 +43,36 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     
     public void actualizarRecursos(){
-        jLabel2.setText(aldea.getCicloActual() + "");
-        jLabel5.setText(aldea.getPersonajes().size() + "");
-        jLabel7.setText(aldea.getMaderaDisponible() + "");
-        jLabel9.setText(aldea.getCercaPrincipal().getResistenciaActual() + "");
-        jLabel11.setText(aldea.getComidaVegetalDisponible() + "");
-        jLabel13.setText(aldea.getComidaAnimalDisponible() + "");
-        jLabel15.setText(aldea.getAnimalesActivos().size() + "");
-        jLabel18.setText(aldea.getTorres().size() + "");
-        jLabel19.setText(aldea.getParcelasCultivo().size() + "");
-        jLabel24.setText(aldea.getArbolesDisponibles() + "");
-        jLabel21.setText(aldea.getTurnosSinComida() + "");
+        labelVarCicloActual.setText(aldea.getCicloActual() + "");
+        labelVarPersonajesVivos.setText(aldea.getPersonajes().size() + "");
+        labelVarMaderaDisponible.setText(aldea.getMaderaDisponible() + "");
+        labelVarCercaPrincipal.setText(aldea.getCercaPrincipal().getResistenciaActual() + "");
+        labelVarComidaVegetal.setText(aldea.getComidaVegetalDisponible() + "");
+        labelVarComidaAnimal.setText(aldea.getComidaAnimalDisponible() + "");
+        labelVarAnimalesActivos.setText(aldea.getAnimalesActivos().size() + "");
+        labelVarTorres.setText(aldea.getTorres().size() + "");
+        labelVarParcelas.setText(aldea.getParcelasCultivo().size() + "");
+        labelVarArbolesDisponibles.setText(aldea.getArbolesDisponibles() + "");
+        labelVarTurnosSinComida.setText(aldea.getTurnosSinComida() + "");
+    }
+
+    public void crearLabelsIniciales(){
+        
         for (Personaje p : aldea.getPersonajes()){
             crearLabelPersonaje(p);
         }
+        for (TorreDefensa t : aldea.getTorres()){
+            crearLabelTorre(t);
+        }
+        for (Parcela parcela : aldea.getParcelasCultivo()){
+            crearLabelParcela(parcela);
+        }
+        crearLabelCerca();
     }
     
     public void crearLabelPersonaje(Personaje personaje){
         javax.swing.JLabel nuevoLabel = new javax.swing.JLabel();
-        jPanel1.add(nuevoLabel);
+        mainPanel.add(nuevoLabel);
         personaje.setLabelGUI(nuevoLabel);
         nuevoLabel.setBackground(new java.awt.Color(200, 200, 200));
         nuevoLabel.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
@@ -64,7 +80,87 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         nuevoLabel.setText(personaje.getNombre());
         nuevoLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         nuevoLabel.setOpaque(true);
-        nuevoLabel.setBounds(50 * aldea.getPersonajes().indexOf(personaje) + 1, 50, 60, 60);
+        nuevoLabel.setBounds(LABEL_SIZE * aldea.getPersonajes().indexOf(personaje), 0, LABEL_SIZE, LABEL_SIZE);
+        nuevoLabel.setBorder(BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        personaje.setObjetivo(personaje.getLabelGUI().getLocation());
+    }
+
+    public void crearLabelTorre(TorreDefensa torre){
+        javax.swing.JLabel nuevoLabel = new javax.swing.JLabel();
+        mainPanel.add(nuevoLabel);
+        torre.setLabelGUI(nuevoLabel);
+        nuevoLabel.setBackground(new java.awt.Color(150, 150, 150));
+        nuevoLabel.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        nuevoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        nuevoLabel.setText("Torre");
+        nuevoLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        nuevoLabel.setOpaque(true);
+        nuevoLabel.setBounds(60*aldea.getTorres().indexOf(torre), 60, LABEL_SIZE, LABEL_SIZE);
+        nuevoLabel.setBorder(BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+    }
+    
+    public void crearLabelCerca(){
+        javax.swing.JLabel nuevoLabel = new javax.swing.JLabel();
+        mainPanel.add(nuevoLabel);
+        nuevoLabel.setBackground(new java.awt.Color(200, 100, 0));
+        nuevoLabel.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        nuevoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        nuevoLabel.setText("Cerca");
+        nuevoLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        nuevoLabel.setOpaque(true);
+        nuevoLabel.setBounds(0, 0, LABEL_SIZE*4, LABEL_SIZE*4);
+        nuevoLabel.setBorder(BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        
+    }
+
+    public void crearLabelAnimal(Animal animal){
+        javax.swing.JLabel nuevoLabel = new javax.swing.JLabel();
+        mainPanel.add(nuevoLabel);
+        animal.setLabelGUI(nuevoLabel);
+        nuevoLabel.setBackground(new java.awt.Color(100, 200, 100));
+        nuevoLabel.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        nuevoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        nuevoLabel.setText(animal.getNombre());
+        nuevoLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        nuevoLabel.setOpaque(true);
+        nuevoLabel.setBounds(LABEL_SIZE * aldea.getAnimalesActivos().indexOf(animal), 120, LABEL_SIZE, LABEL_SIZE);
+        nuevoLabel.setBorder(BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+    }
+
+    public void crearLabelParcela(Parcela parcela){
+        javax.swing.JLabel nuevoLabel = new javax.swing.JLabel();
+        mainPanel.add(nuevoLabel);
+        parcela.setLabelGUI(nuevoLabel);
+        nuevoLabel.setBackground(new java.awt.Color(100, 100, 200));
+        nuevoLabel.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        nuevoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        nuevoLabel.setText(parcela.getNombre());
+        nuevoLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        nuevoLabel.setOpaque(true);
+        nuevoLabel.setBounds(LABEL_SIZE * aldea.getParcelasCultivo().indexOf(parcela), 90, LABEL_SIZE, LABEL_SIZE);
+        nuevoLabel.setBorder(BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+    }
+
+    public javax.swing.JLabel crearLabelArbol(){
+        javax.swing.JLabel nuevoLabel = new javax.swing.JLabel();
+        mainPanel.add(nuevoLabel);
+        nuevoLabel.setBackground(new java.awt.Color(0, 255, 0));
+        nuevoLabel.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        nuevoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        nuevoLabel.setText("Árbol");
+        nuevoLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        nuevoLabel.setOpaque(true);
+        nuevoLabel.setBounds(LABEL_SIZE * aldea.getArbolesDisponibles(), 150, LABEL_SIZE, LABEL_SIZE);
+        nuevoLabel.setBorder(BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        return nuevoLabel;
+    }
+
+    public void habilitarAgregarPersonaje(){
+        BtnAgregarPersonaje.setEnabled(true);
+    }
+
+    public void deshabilitarAgregarPersonaje(){
+        BtnAgregarPersonaje.setEnabled(false);
     }
     
     public void moverPersonaje(Personaje p, int x, int y){
@@ -74,36 +170,35 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        mainPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        jLabel13 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        jLabel17 = new javax.swing.JLabel();
-        jLabel18 = new javax.swing.JLabel();
-        jLabel19 = new javax.swing.JLabel();
-        jLabel21 = new javax.swing.JLabel();
-        jLabel23 = new javax.swing.JLabel();
-        jLabel24 = new javax.swing.JLabel();
-        jLabel25 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        labelMaderaDisponible = new javax.swing.JLabel();
+        labelVarMaderaDisponible = new javax.swing.JLabel();
+        labelCercaPrincipal = new javax.swing.JLabel();
+        labelVarCercaPrincipal = new javax.swing.JLabel();
+        labelVarCicloActual = new javax.swing.JLabel();
+        labelCicloActual = new javax.swing.JLabel();
+        labelPersonajesVivos = new javax.swing.JLabel();
+        labelVarPersonajesVivos = new javax.swing.JLabel();
+        labelComidaVegetal = new javax.swing.JLabel();
+        labelVarComidaVegetal = new javax.swing.JLabel();
+        labelComidaAnimal = new javax.swing.JLabel();
+        labelVarComidaAnimal = new javax.swing.JLabel();
+        labelTorres = new javax.swing.JLabel();
+        labelVarAnimalesActivos = new javax.swing.JLabel();
+        labelAnimalesActivos = new javax.swing.JLabel();
+        labelParcelas = new javax.swing.JLabel();
+        labelVarTorres = new javax.swing.JLabel();
+        labelVarParcelas = new javax.swing.JLabel();
+        labelVarTurnosSinComida = new javax.swing.JLabel();
+        labelTurnosSinComida = new javax.swing.JLabel();
+        labelVarArbolesDisponibles = new javax.swing.JLabel();
+        labelArbolesDisponibles = new javax.swing.JLabel();
+        BtnAgregarPersonaje = new javax.swing.JButton();
+        BtnAvanzarCiclo = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Aldea Juego");
@@ -112,17 +207,17 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         setForeground(new java.awt.Color(102, 102, 102));
         setResizable(false);
 
-        jPanel1.setBackground(new java.awt.Color(0, 0, 51));
-        jPanel1.setPreferredSize(new java.awt.Dimension(600, 600));
+        mainPanel.setBackground(new java.awt.Color(0, 0, 51));
+        mainPanel.setPreferredSize(new java.awt.Dimension(600, 600));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
+        mainPanel.setLayout(mainPanelLayout);
+        mainPanelLayout.setHorizontalGroup(
+            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 896, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        mainPanelLayout.setVerticalGroup(
+            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 600, Short.MAX_VALUE)
         );
 
@@ -141,159 +236,159 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel1.setOpaque(true);
 
-        jLabel6.setBackground(new java.awt.Color(0, 102, 51));
-        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setText("Madera disponible:");
-        jLabel6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel6.setOpaque(true);
+        labelMaderaDisponible.setBackground(new java.awt.Color(0, 102, 51));
+        labelMaderaDisponible.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelMaderaDisponible.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelMaderaDisponible.setText("Madera disponible:");
+        labelMaderaDisponible.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        labelMaderaDisponible.setOpaque(true);
 
-        jLabel7.setBackground(new java.awt.Color(0, 102, 51));
-        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel7.setText("Temp text");
-        jLabel7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel7.setOpaque(true);
+        labelVarMaderaDisponible.setBackground(new java.awt.Color(0, 102, 51));
+        labelVarMaderaDisponible.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelVarMaderaDisponible.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelVarMaderaDisponible.setText("Temp text");
+        labelVarMaderaDisponible.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        labelVarMaderaDisponible.setOpaque(true);
 
-        jLabel8.setBackground(new java.awt.Color(0, 102, 51));
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel8.setText("Cerca principal");
-        jLabel8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel8.setOpaque(true);
+        labelCercaPrincipal.setBackground(new java.awt.Color(0, 102, 51));
+        labelCercaPrincipal.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelCercaPrincipal.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelCercaPrincipal.setText("Cerca principal");
+        labelCercaPrincipal.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        labelCercaPrincipal.setOpaque(true);
 
-        jLabel9.setBackground(new java.awt.Color(0, 102, 51));
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel9.setText("Temp text");
-        jLabel9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel9.setOpaque(true);
+        labelVarCercaPrincipal.setBackground(new java.awt.Color(0, 102, 51));
+        labelVarCercaPrincipal.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelVarCercaPrincipal.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelVarCercaPrincipal.setText("Temp text");
+        labelVarCercaPrincipal.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        labelVarCercaPrincipal.setOpaque(true);
 
-        jLabel2.setBackground(new java.awt.Color(0, 102, 51));
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText(aldea.getCicloActual() + "");
-        jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel2.setOpaque(true);
+        labelVarCicloActual.setBackground(new java.awt.Color(0, 102, 51));
+        labelVarCicloActual.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelVarCicloActual.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelVarCicloActual.setText(aldea.getCicloActual() + "");
+        labelVarCicloActual.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        labelVarCicloActual.setOpaque(true);
 
-        jLabel3.setBackground(new java.awt.Color(0, 102, 51));
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("Ciclo Actual:");
-        jLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel3.setOpaque(true);
+        labelCicloActual.setBackground(new java.awt.Color(0, 102, 51));
+        labelCicloActual.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelCicloActual.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelCicloActual.setText("Ciclo Actual:");
+        labelCicloActual.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        labelCicloActual.setOpaque(true);
 
-        jLabel4.setBackground(new java.awt.Color(0, 102, 51));
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setText("Personajes vivos:");
-        jLabel4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel4.setOpaque(true);
+        labelPersonajesVivos.setBackground(new java.awt.Color(0, 102, 51));
+        labelPersonajesVivos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelPersonajesVivos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelPersonajesVivos.setText("Personajes vivos:");
+        labelPersonajesVivos.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        labelPersonajesVivos.setOpaque(true);
 
-        jLabel5.setBackground(new java.awt.Color(0, 102, 51));
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("Temp text");
-        jLabel5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel5.setOpaque(true);
+        labelVarPersonajesVivos.setBackground(new java.awt.Color(0, 102, 51));
+        labelVarPersonajesVivos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelVarPersonajesVivos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelVarPersonajesVivos.setText("Temp text");
+        labelVarPersonajesVivos.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        labelVarPersonajesVivos.setOpaque(true);
 
-        jLabel10.setBackground(new java.awt.Color(0, 102, 51));
-        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel10.setText("Comida vegetal:");
-        jLabel10.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel10.setOpaque(true);
+        labelComidaVegetal.setBackground(new java.awt.Color(0, 102, 51));
+        labelComidaVegetal.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelComidaVegetal.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelComidaVegetal.setText("Comida vegetal:");
+        labelComidaVegetal.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        labelComidaVegetal.setOpaque(true);
 
-        jLabel11.setBackground(new java.awt.Color(0, 102, 51));
-        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel11.setText("Temp text");
-        jLabel11.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel11.setOpaque(true);
+        labelVarComidaVegetal.setBackground(new java.awt.Color(0, 102, 51));
+        labelVarComidaVegetal.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelVarComidaVegetal.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelVarComidaVegetal.setText("Temp text");
+        labelVarComidaVegetal.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        labelVarComidaVegetal.setOpaque(true);
 
-        jLabel12.setBackground(new java.awt.Color(0, 102, 51));
-        jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel12.setText("Comida animal:");
-        jLabel12.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel12.setOpaque(true);
+        labelComidaAnimal.setBackground(new java.awt.Color(0, 102, 51));
+        labelComidaAnimal.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelComidaAnimal.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelComidaAnimal.setText("Comida animal:");
+        labelComidaAnimal.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        labelComidaAnimal.setOpaque(true);
 
-        jLabel13.setBackground(new java.awt.Color(0, 102, 51));
-        jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel13.setText("Temp text");
-        jLabel13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel13.setOpaque(true);
+        labelVarComidaAnimal.setBackground(new java.awt.Color(0, 102, 51));
+        labelVarComidaAnimal.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelVarComidaAnimal.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelVarComidaAnimal.setText("Temp text");
+        labelVarComidaAnimal.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        labelVarComidaAnimal.setOpaque(true);
 
-        jLabel14.setBackground(new java.awt.Color(0, 102, 51));
-        jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel14.setText("Torres");
-        jLabel14.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel14.setOpaque(true);
+        labelTorres.setBackground(new java.awt.Color(0, 102, 51));
+        labelTorres.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelTorres.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelTorres.setText("Torres");
+        labelTorres.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        labelTorres.setOpaque(true);
 
-        jLabel15.setBackground(new java.awt.Color(0, 102, 51));
-        jLabel15.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel15.setText("Temp text");
-        jLabel15.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel15.setOpaque(true);
+        labelVarAnimalesActivos.setBackground(new java.awt.Color(0, 102, 51));
+        labelVarAnimalesActivos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelVarAnimalesActivos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelVarAnimalesActivos.setText("Temp text");
+        labelVarAnimalesActivos.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        labelVarAnimalesActivos.setOpaque(true);
 
-        jLabel16.setBackground(new java.awt.Color(0, 102, 51));
-        jLabel16.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel16.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel16.setText("Animales activos");
-        jLabel16.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel16.setOpaque(true);
+        labelAnimalesActivos.setBackground(new java.awt.Color(0, 102, 51));
+        labelAnimalesActivos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelAnimalesActivos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelAnimalesActivos.setText("Animales activos");
+        labelAnimalesActivos.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        labelAnimalesActivos.setOpaque(true);
 
-        jLabel17.setBackground(new java.awt.Color(0, 102, 51));
-        jLabel17.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel17.setText("Parcelas");
-        jLabel17.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel17.setOpaque(true);
+        labelParcelas.setBackground(new java.awt.Color(0, 102, 51));
+        labelParcelas.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelParcelas.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelParcelas.setText("Parcelas");
+        labelParcelas.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        labelParcelas.setOpaque(true);
 
-        jLabel18.setBackground(new java.awt.Color(0, 102, 51));
-        jLabel18.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel18.setText("Temp text");
-        jLabel18.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel18.setOpaque(true);
+        labelVarTorres.setBackground(new java.awt.Color(0, 102, 51));
+        labelVarTorres.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelVarTorres.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelVarTorres.setText("Temp text");
+        labelVarTorres.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        labelVarTorres.setOpaque(true);
 
-        jLabel19.setBackground(new java.awt.Color(0, 102, 51));
-        jLabel19.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel19.setText("Temp text");
-        jLabel19.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel19.setOpaque(true);
+        labelVarParcelas.setBackground(new java.awt.Color(0, 102, 51));
+        labelVarParcelas.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelVarParcelas.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelVarParcelas.setText("Temp text");
+        labelVarParcelas.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        labelVarParcelas.setOpaque(true);
 
-        jLabel21.setBackground(new java.awt.Color(0, 102, 51));
-        jLabel21.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel21.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel21.setText("Temp text");
-        jLabel21.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel21.setOpaque(true);
+        labelVarTurnosSinComida.setBackground(new java.awt.Color(0, 102, 51));
+        labelVarTurnosSinComida.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelVarTurnosSinComida.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelVarTurnosSinComida.setText("Temp text");
+        labelVarTurnosSinComida.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        labelVarTurnosSinComida.setOpaque(true);
 
-        jLabel23.setBackground(new java.awt.Color(0, 102, 51));
-        jLabel23.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel23.setText("Turnos sin comida");
-        jLabel23.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel23.setOpaque(true);
+        labelTurnosSinComida.setBackground(new java.awt.Color(0, 102, 51));
+        labelTurnosSinComida.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelTurnosSinComida.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelTurnosSinComida.setText("Turnos sin comida");
+        labelTurnosSinComida.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        labelTurnosSinComida.setOpaque(true);
 
-        jLabel24.setBackground(new java.awt.Color(0, 102, 51));
-        jLabel24.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel24.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel24.setText("Temp text");
-        jLabel24.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel24.setOpaque(true);
+        labelVarArbolesDisponibles.setBackground(new java.awt.Color(0, 102, 51));
+        labelVarArbolesDisponibles.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelVarArbolesDisponibles.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelVarArbolesDisponibles.setText("Temp text");
+        labelVarArbolesDisponibles.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        labelVarArbolesDisponibles.setOpaque(true);
 
-        jLabel25.setBackground(new java.awt.Color(0, 102, 51));
-        jLabel25.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel25.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel25.setText("Árboles disponibles");
-        jLabel25.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel25.setOpaque(true);
+        labelArbolesDisponibles.setBackground(new java.awt.Color(0, 102, 51));
+        labelArbolesDisponibles.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelArbolesDisponibles.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelArbolesDisponibles.setText("Árboles disponibles");
+        labelArbolesDisponibles.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        labelArbolesDisponibles.setOpaque(true);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -305,55 +400,55 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelMaderaDisponible, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(labelVarMaderaDisponible, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(labelPersonajesVivos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(labelCicloActual, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(labelVarCicloActual, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(labelVarPersonajesVivos, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelCercaPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(labelVarCercaPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelComidaAnimal, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(labelVarComidaAnimal, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelComidaVegetal, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(labelVarComidaVegetal, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelAnimalesActivos, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(labelVarAnimalesActivos, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelParcelas, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(labelVarParcelas, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelTorres, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(labelVarTorres, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelArbolesDisponibles, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(labelVarArbolesDisponibles, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelTurnosSinComida, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(labelVarTurnosSinComida, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -366,60 +461,58 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addGroup(jPanel2Layout.createSequentialGroup()
                                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel23)
-                                        .addComponent(jLabel21))
+                                        .addComponent(labelTurnosSinComida)
+                                        .addComponent(labelVarTurnosSinComida))
                                     .addGap(26, 26, 26))
                                 .addGroup(jPanel2Layout.createSequentialGroup()
                                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel25)
-                                        .addComponent(jLabel24))
+                                        .addComponent(labelArbolesDisponibles)
+                                        .addComponent(labelVarArbolesDisponibles))
                                     .addGap(52, 52, 52)))
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel8)
-                                .addComponent(jLabel9)
-                                .addComponent(jLabel16)
-                                .addComponent(jLabel15)))
+                                .addComponent(labelCercaPrincipal)
+                                .addComponent(labelVarCercaPrincipal)
+                                .addComponent(labelAnimalesActivos)
+                                .addComponent(labelVarAnimalesActivos)))
                         .addGroup(jPanel2Layout.createSequentialGroup()
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel14)
-                                    .addComponent(jLabel18))
+                                    .addComponent(labelTorres)
+                                    .addComponent(labelVarTorres))
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel10)
-                                    .addComponent(jLabel11)))
+                                    .addComponent(labelComidaVegetal)
+                                    .addComponent(labelVarComidaVegetal)))
                             .addGap(26, 26, 26)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel2))
+                            .addComponent(labelCicloActual)
+                            .addComponent(labelVarCicloActual))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5))
+                            .addComponent(labelPersonajesVivos)
+                            .addComponent(labelVarPersonajesVivos))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel17)
-                                    .addComponent(jLabel19))
+                                    .addComponent(labelParcelas)
+                                    .addComponent(labelVarParcelas))
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel12)
-                                    .addComponent(jLabel13)))
+                                    .addComponent(labelComidaAnimal)
+                                    .addComponent(labelVarComidaAnimal)))
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel6)
-                                .addComponent(jLabel7))))
+                                .addComponent(labelMaderaDisponible)
+                                .addComponent(labelVarMaderaDisponible))))
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 12, Short.MAX_VALUE))
         );
 
-        jButton1.setText("Crear personaje");
-        jButton1.addActionListener(this::jButton1ActionPerformed);
+        BtnAgregarPersonaje.setText("Agregar personaje");
+        BtnAgregarPersonaje.setEnabled(false);
+        BtnAgregarPersonaje.addActionListener(this::BtnAgregarPersonajeActionPerformed);
 
-        jButton2.setText("Agregar personaje");
-        jButton2.setEnabled(false);
-
-        jButton3.setText("Avanzar ciclo");
-        jButton3.addActionListener(this::jButton3ActionPerformed);
+        BtnAvanzarCiclo.setText("Avanzar ciclo");
+        BtnAvanzarCiclo.addActionListener(this::BtnAvanzarCicloActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -431,17 +524,17 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 896, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton3)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 896, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(BtnAvanzarCiclo)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(6, 6, 6)
-                                .addComponent(jButton2))
+                                .addComponent(BtnAgregarPersonaje))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
@@ -452,61 +545,62 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(BtnAvanzarCiclo, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
+                    .addComponent(BtnAgregarPersonaje, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void BtnAvanzarCicloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAvanzarCicloActionPerformed
         // TODO add your handling code here:
-        crearLabelPersonaje(aldea.getPersonajes().getFirst());
-    }//GEN-LAST:event_jButton1ActionPerformed
+        BtnAvanzarCiclo.setEnabled(false);
+        aldea.simularCiclo();
+        BtnAvanzarCiclo.setEnabled(true);
+    }//GEN-LAST:event_BtnAvanzarCicloActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void BtnAgregarPersonajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAgregarPersonajeActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+        //Crear personaje
+    }//GEN-LAST:event_BtnAgregarPersonajeActionPerformed
 
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton BtnAgregarPersonaje;
+    private javax.swing.JButton BtnAvanzarCiclo;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel23;
-    private javax.swing.JLabel jLabel24;
-    private javax.swing.JLabel jLabel25;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JLabel labelAnimalesActivos;
+    private javax.swing.JLabel labelArbolesDisponibles;
+    private javax.swing.JLabel labelCercaPrincipal;
+    private javax.swing.JLabel labelCicloActual;
+    private javax.swing.JLabel labelComidaAnimal;
+    private javax.swing.JLabel labelComidaVegetal;
+    private javax.swing.JLabel labelMaderaDisponible;
+    private javax.swing.JLabel labelParcelas;
+    private javax.swing.JLabel labelPersonajesVivos;
+    private javax.swing.JLabel labelTorres;
+    private javax.swing.JLabel labelTurnosSinComida;
+    private javax.swing.JLabel labelVarAnimalesActivos;
+    private javax.swing.JLabel labelVarArbolesDisponibles;
+    private javax.swing.JLabel labelVarCercaPrincipal;
+    private javax.swing.JLabel labelVarCicloActual;
+    private javax.swing.JLabel labelVarComidaAnimal;
+    private javax.swing.JLabel labelVarComidaVegetal;
+    private javax.swing.JLabel labelVarMaderaDisponible;
+    private javax.swing.JLabel labelVarParcelas;
+    private javax.swing.JLabel labelVarPersonajesVivos;
+    private javax.swing.JLabel labelVarTorres;
+    private javax.swing.JLabel labelVarTurnosSinComida;
+    private javax.swing.JPanel mainPanel;
     // End of variables declaration//GEN-END:variables
 }

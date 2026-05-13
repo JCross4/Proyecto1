@@ -1,9 +1,11 @@
 package funcion;
 
+import java.awt.Point;
+
 public class Guardian extends Personaje {
 
-    public Guardian(String nombre, int posicion, Aldea aldea) {
-        super(nombre, posicion, "guardian", aldea);
+    public Guardian(String nombre, Aldea aldea) {
+        super(nombre,"guardian", aldea);
         //TODO Auto-generated constructor stub
     }
 
@@ -34,7 +36,8 @@ public class Guardian extends Personaje {
     @Override
     public void determinarObjetivo() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'determinarObjetivo'");
+        Point objetivo = this.getAldea().obtenerTorreCercana(this.getLabelGUI().getLocation());
+        this.setObjetivo(objetivo);
     }
 
 

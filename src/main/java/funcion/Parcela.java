@@ -17,4 +17,38 @@ public class Parcela extends Estructura {
             ciclosParaCosechar = 3; // Ejemplo: tarda 3 ciclos en estar lista para cosechar
         }
     }
+
+    public void cuidar() {
+        if (estado.equals("sembrada") && ciclosParaCosechar > 0) {
+            ciclosParaCosechar--;
+            if (ciclosParaCosechar == 0) {
+                estado = "lista para cosechar";
+            }
+        }
+    }
+    
+    public void cosechar() {
+        if (estado.equals("lista para cosechar")) {
+            estado = "vacía";
+            ciclosParaCosechar = 0;
+        }
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public int getCiclosParaCosechar() {
+        return ciclosParaCosechar;
+    }
+
+    public void setCiclosParaCosechar(int ciclosParaCosechar) {
+        this.ciclosParaCosechar = ciclosParaCosechar;
+    }
+
+    
 }

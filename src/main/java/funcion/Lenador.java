@@ -1,9 +1,10 @@
 package funcion;
 
+
 public class Lenador extends Personaje {
 
-    public Lenador(String nombre, int posicion, Aldea aldea) {
-        super(nombre, posicion, "lenador", aldea);
+    public Lenador(String nombre, Aldea aldea) {
+        super(nombre,"lenador", aldea);
         //TODO Auto-generated constructor stub
     }
 
@@ -34,7 +35,16 @@ public class Lenador extends Personaje {
     @Override
     public void determinarObjetivo() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'determinarObjetivo'");
+        /*Si quedan árboles disponibles, corta 1 árbol.  
+2. Si no quedan árboles, descansa. */
+        if (this.getAldea().getArbolesDisponibles() > 0 && this.getEnergia() >= 20) {
+            // Objetivo: cortar árbol (podría ser la posición del árbol más cercano o alguna otra lógica)
+            //this.setObjetivo(this.getAldea().obtenerArbolCercano(this.getLabelGUI().getLocation()));
+        }
+        else {
+            // Objetivo: descansar
+            this.setObjetivo(this.getLabelGUI().getLocation()); // Podría ser una posición específica para descansar
+        }
     }
 
 

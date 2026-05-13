@@ -20,15 +20,16 @@ public abstract class Personaje {
     private String tipo;
     private javax.swing.JLabel labelGUI;
     private Aldea aldea; // Referencia a la aldea para interactuar con otros personajes y el entorno
-    private Point objetivo = new Point(0,0); // Posición objetivo para moverse
+    private Point objetivo; // Posición objetivo para moverse
+    private String accionActual; // Acción que el personaje está realizando actualmente
 
 
     // Métodos abstractos que deben implementar las clases concretas
-    public abstract void mover();
-    public abstract void realizarAccion();
-    public abstract void comer();
-    public abstract void descansar();
-    public abstract void determinarObjetivo();
+    public abstract void mover(); //?
+    public abstract void realizarAccion();  //Checkear condiciones y realizar acción según indicado
+    public abstract void comer();   //Recupera energía y reduce comida disponible
+    public abstract void descansar();   //Recupera energía y cambia animación a "descansando"
+    public abstract void determinarObjetivo();  //Determina el objetivo según su función (ej. torre más cercana, parcela de cultivo, etc.)
 
 
     public Personaje(String nombre, String tipo, Aldea aldea) {
@@ -104,10 +105,17 @@ public abstract class Personaje {
     public void setAldea(Aldea aldea) {
         this.aldea = aldea;
     }
+    public String getAccionActual() {
+    return accionActual;
+}
+public void setAccionActual(String accionActual) {
+    this.accionActual = accionActual;
+}
 @Override
     public String toString() {
         return "Personaje [nombre=" + nombre + ", salud=" + salud + ", energia=" + energia + ", vivo=" + vivo
                 + ", tipo=" + tipo + "]";
     }
+
     
 }
