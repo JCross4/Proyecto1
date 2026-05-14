@@ -36,8 +36,25 @@ public class Guardian extends Personaje {
     @Override
     public void determinarObjetivo() {
         // TODO Auto-generated method stub
-        Point objetivo = this.getAldea().obtenerTorreCercana(this.getLabelGUI().getLocation());
-        this.setObjetivo(objetivo);
+        /*Si hay animales activos, ataca al animal con mayor fuerza de ataque.  
+2. Si no hay animales activos, vigila la entrada.  
+3. Si no tiene energía suficiente, descansa */
+        if (this.getAldea().getAnimalesActivos().size() > 0 && this.getEnergia() >= 30) {
+            // Objetivo: atacar animal con mayor fuerza de ataque
+            this.setObjetivo(this.getAldea().obtenerAnimalMasFuerte());
+            this.setAccionActual("atacar");
+        }
+        else if (this.getEnergia() >= 15) {
+            // Objetivo: vigilar la entrada (podría ser una posición específica cerca de la entrada)
+            //this.setObjetivo(this.getAldea().obtenerPuntoVigilancia());
+            this.setObjetivo(this.getLabelGUI().getLocation());
+            this.setAccionActual("vigilar");
+        }
+        else {
+            // Objetivo: descansar
+            this.setObjetivo(this.getLabelGUI().getLocation()); // Podría ser una posición específica para descansar
+            this.setAccionActual("descansar");
+        }
     }
 
 

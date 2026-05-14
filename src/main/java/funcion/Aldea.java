@@ -1,6 +1,10 @@
 package funcion;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import javax.swing.JLabel;
@@ -20,7 +24,7 @@ public class Aldea {
     final int CONSTRUCTORES_INICIALES = 1;
     final int GUARDIANES_INICIALES = 1;
     final int LEÑADORES_INICIALES = 1;
-    final int TORRES_INICIALES = 3;
+    final int TORRES_INICIALES = 2;
     final int PARCELAS_CULTIVO_INICIALES = 2;
     final int COMIDA_VEGETAL_INICIAL = 20;
     final int COMIDA_ANIMAL_INICIAL = 10;
@@ -218,6 +222,55 @@ public class Aldea {
         return new Point(xObj, yObj);
     }
 
+    public Point obtenerAnimalMasFuerte(){
+        //TODO Implementar lógica para determinar el objetivo del personaje según su tipo y la situación actual de la aldea
+        //Ejemplo: un agricultor podría dirigirse a una parcela de cultivo, un cazador a un animal activo, etc.
+        if (animalesActivos.size() == 0) {
+            return null; // Podría ser una posición específica para descansar o alguna otra lógica
+        }
+        int xObj = 9999;
+        int yObj = 9999;
+        int maxFuerza = -1;
+        for (Animal animal : animalesActivos) {
+            if (animal.getFuerzaAtaque() > maxFuerza) {
+                maxFuerza = animal.getFuerzaAtaque();
+                xObj = animal.getLabelGUI().getLocation().x;
+                yObj = animal.getLabelGUI().getLocation().y;
+            }
+        }
+        return new Point(xObj, yObj);
+    }
+
+    public Point obtenerArbolCercano(Point punto){
+        //TODO Implementar lógica para determinar el objetivo del personaje según su tipo y la situación actual de la aldea
+        //Ejemplo: un agricultor podría dirigirse a una parcela de cultivo, un cazador a un animal activo, etc.
+        if (arbolesDisponibles == 0) {
+            return null; // Podría ser una posición específica para descansar o alguna otra lógica
+        }
+        int x = punto.x;
+        int y = punto.y;
+        int xObj = 9999;
+        int yObj = 9999;
+        for (JLabel labelArbol : labelArboles) {
+            int absx = Math.abs(x - labelArbol.getLocation().x);
+            int absy = Math.abs(y - labelArbol.getLocation().y);
+            int objx = Math.abs(x - xObj);
+            int objy = Math.abs(y - yObj);
+            if ((absx + absy) < (objx + objy)) {
+                xObj = labelArbol.getLocation().x;
+                yObj = labelArbol.getLocation().y;
+            }
+        }
+        return new Point(xObj, yObj);
+    }
+
+    public Point obtenerPuntoPatrulla(Point punto){
+        //TODO Implementar lógica para determinar el objetivo del personaje según su tipo y la situación actual de la aldea
+        //Ejemplo: un agricultor podría dirigirse a una parcela de cultivo, un cazador a un animal activo, etc.
+        //Podría ser una ruta predefinida o alguna otra lógica
+        return new Point(ventana.getLABEL_SIZE() * 7, ventana.getLABEL_SIZE() * 3); // Ejemplo de punto de patrulla
+    }
+
     public void iniciarThreadsMovimiento() {
         for (ThreadMovimiento thread : hilosMovimiento) {
             thread.start();
@@ -248,8 +301,15 @@ public class Aldea {
             torres.add(crearTorreDefensa());
         }
         arbolesDisponibles = ARBOLES_INICIALES;
+        ArrayList<Point> posicionesArboles = new ArrayList<Point>();
+        for (int i = 7; i < 14; i++) {
+            for (int j = 1; j < 5; j++) {
+                posicionesArboles.add(new Point(i, j));
+            }
+        }
         for (int i = 0; i < ARBOLES_INICIALES; i++) {
-            labelArboles.add(ventana.crearLabelArbol());
+            labelArboles.add(ventana.crearLabelArbol(posicionesArboles));
+            posicionesArboles.remove(0);
         }
         maderaDisponible = MADERA_INICIAL;
         comidaVegetalDisponible = COMIDA_VEGETAL_INICIAL;
@@ -263,27 +323,30 @@ public class Aldea {
     }
 
     public void simularCiclo() {
+        
         //TODO Implementar lógica para simular un ciclo completo de la aldea, incluyendo las acciones de personajes, animales y estructuras, así como la verificación de condiciones de victoria y derrota
         
         //Ciclo principal de la simulación
         if (cicloActual <= MAX_CICLOS) {
             //TODO Realizar acciones segun el orden determinado
             cicloActual++;
+            ventana.agregarLog("\nCiclo Actual:" + cicloActual);
             ventana.actualizarRecursos();
             for (Personaje personaje : personajes){ //Los personajes realizan sus acciones y entonces cada uno determina su objetivo
                 if (personaje.estaVivo()) {
                     //personaje.realizarAccion();
                     personaje.determinarObjetivo();
+                    ventana.agregarLog(personaje.getNombre() + " se dirige a " + personaje.getObjetivo());
                 }
             }
             verificarCrearAnimal();
             if(verificarCondicionesDerrota()) {
-                System.out.println("¡Derrota! La aldea ha caído.");
+                ventana.agregarLog("¡Derrota! La aldea ha caído.");
             }
             
         }
         else if (verificarCondicionesVictoria()) {
-            System.out.println("¡Victoria! La aldea ha resistido.");
+            ventana.agregarLog("¡Victoria! La aldea ha resistido.");
         }
         if (verificarCondicionesAgregarPersonaje()) {
             ventana.habilitarAgregarPersonaje();
@@ -302,7 +365,7 @@ public class Aldea {
         //TODO Verificar condiciones de derrota al final de cada ciclo
         if ((comidaVegetalDisponible + comidaAnimalDisponible) <= minComidaDerrota) {
             turnosSinComida++;
-            System.out.println("¡Cuidado! La aldea no tiene comida disponible. Al llegar a  " + maxTurnosMinComida + " perderá la partida.\nTurnos sin comida: " + turnosSinComida);
+            ventana.agregarLog("¡Cuidado! La aldea no tiene comida disponible. Al llegar a  " + maxTurnosMinComida + " perderá la partida.\nTurnos sin comida: " + turnosSinComida);
         } else {
             turnosSinComida = 0; // Reiniciar el contador si hay comida disponible
         }
@@ -328,6 +391,34 @@ public class Aldea {
     }
 
     public void agregarPersonaje(String tipo) {
+            if (tipo.equalsIgnoreCase("Automático"))
+                {
+                    //Determinar el tipo de personaje a agregar según la cantidad de cada tipo de personaje vivo en la aldea
+                    Map<String, Integer> counts = new HashMap<>();
+                    for (Personaje personaje : personajes) {
+                            if (personaje instanceof Agricultor) {
+                                counts.put("Agricultor", counts.getOrDefault("Agricultor", 0) + 1);
+                            } else if (personaje instanceof Lenador) {
+                                counts.put("Leñador", counts.getOrDefault("Leñador", 0) + 1);
+                            } else if (personaje instanceof Constructor) {
+                                counts.put("Constructor", counts.getOrDefault("Constructor", 0) + 1);
+                            } else if (personaje instanceof Guardian) {
+                                counts.put("Guardián", counts.getOrDefault("Guardián", 0) + 1);
+                            } else if (personaje instanceof Cazador) {
+                                counts.put("Cazador", counts.getOrDefault("Cazador", 0) + 1);
+                            }
+                        }
+                    List<String> types = Arrays.asList("Agricultor", "Leñador", "Constructor", "Guardián", "Cazador");
+                    for (String t : types) {
+                        if (counts.getOrDefault(t, 0) < 2) {
+                            tipo = t;
+                            break;
+                        }
+                    }
+                    if (tipo.equals("Automático")) { // if none found, default
+                        tipo = "Agricultor";
+                    }
+                }
             Personaje nuevoPersonaje = crearPersonaje(tipo);
             personajes.add(nuevoPersonaje);
             ThreadMovimiento nuevoHilo = new ThreadMovimiento(nuevoPersonaje);

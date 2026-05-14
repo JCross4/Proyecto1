@@ -58,17 +58,21 @@ public class Agricultor extends Personaje {
         }
         if (parcelaParaSembrar != null && this.getEnergia() >= 15) {
             this.setObjetivo(parcelaParaSembrar.getLabelGUI().getLocation());
-            }
+            this.setAccionActual("sembrar");
+        }
         else if (parcelaParaCosechar != null && this.getEnergia() >= 15) {
             this.setObjetivo(parcelaParaCosechar.getLabelGUI().getLocation());
+            this.setAccionActual("cosechar");
         }
         else if (parcelaParaCuidar != null && this.getEnergia() >= 10) {
             // Objetivo: cuidar cultivos (podría ser la parcela con más ciclos para cosechar o alguna otra lógica)
             this.setObjetivo(parcelaParaCuidar.getLabelGUI().getLocation());
+            this.setAccionActual("cuidar");
         }
         else {
             // Objetivo: descansar
             this.setObjetivo(this.getLabelGUI().getLocation()); // Podría ser una posición específica para descansar
+            this.setAccionActual("descansar");
         }
     }
 

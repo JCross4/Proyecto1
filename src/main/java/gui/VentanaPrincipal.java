@@ -4,6 +4,10 @@
  */
 package gui;
 
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Collections;
+
 import javax.swing.BorderFactory;
 
 import funcion.Aldea;
@@ -19,7 +23,7 @@ import funcion.TorreDefensa;
 public class VentanaPrincipal extends javax.swing.JFrame {
     
     private Aldea aldea;
-    private final int LABEL_SIZE = 30;
+    private final int LABEL_SIZE = 60;
 
     /**
      * Creates new form VentanaPrincipal2
@@ -95,7 +99,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         nuevoLabel.setText("Torre");
         nuevoLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         nuevoLabel.setOpaque(true);
-        nuevoLabel.setBounds(60*aldea.getTorres().indexOf(torre), 60, LABEL_SIZE, LABEL_SIZE);
+        nuevoLabel.setBounds(60*aldea.getTorres().indexOf(torre), LABEL_SIZE * 3, LABEL_SIZE, LABEL_SIZE);
         nuevoLabel.setBorder(BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
     }
     
@@ -123,7 +127,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         nuevoLabel.setText(animal.getNombre());
         nuevoLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         nuevoLabel.setOpaque(true);
-        nuevoLabel.setBounds(LABEL_SIZE * aldea.getAnimalesActivos().indexOf(animal), 120, LABEL_SIZE, LABEL_SIZE);
+        nuevoLabel.setBounds(LABEL_SIZE * aldea.getAnimalesActivos().indexOf(animal), LABEL_SIZE * 5, LABEL_SIZE, LABEL_SIZE);
         nuevoLabel.setBorder(BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
     }
 
@@ -137,11 +141,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         nuevoLabel.setText(parcela.getNombre());
         nuevoLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         nuevoLabel.setOpaque(true);
-        nuevoLabel.setBounds(LABEL_SIZE * aldea.getParcelasCultivo().indexOf(parcela), 90, LABEL_SIZE, LABEL_SIZE);
+        nuevoLabel.setBounds(LABEL_SIZE * aldea.getParcelasCultivo().indexOf(parcela), LABEL_SIZE * 2, LABEL_SIZE, LABEL_SIZE);
         nuevoLabel.setBorder(BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
     }
 
-    public javax.swing.JLabel crearLabelArbol(){
+    public javax.swing.JLabel crearLabelArbol(ArrayList<Point> posicionesArboles){
         javax.swing.JLabel nuevoLabel = new javax.swing.JLabel();
         mainPanel.add(nuevoLabel);
         nuevoLabel.setBackground(new java.awt.Color(0, 255, 0));
@@ -150,7 +154,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         nuevoLabel.setText("Árbol");
         nuevoLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         nuevoLabel.setOpaque(true);
-        nuevoLabel.setBounds(LABEL_SIZE * aldea.getArbolesDisponibles(), 150, LABEL_SIZE, LABEL_SIZE);
+        Collections.shuffle(posicionesArboles);
+        nuevoLabel.setBounds(LABEL_SIZE * posicionesArboles.getFirst().x, LABEL_SIZE * posicionesArboles.getFirst().y, LABEL_SIZE, LABEL_SIZE);
         nuevoLabel.setBorder(BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         return nuevoLabel;
     }
@@ -167,6 +172,14 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         p.getLabelGUI().setLocation(x, y);
     }
 
+    public String obtenerPersonajeSeleccionado(){
+        return ((String) comboBoxPersonaje.getSelectedItem());
+        //TODO lógica para obtener el personaje seleccionado a partir del nombre
+    }
+
+    public void agregarLog(String mensaje){
+        jTextArea1.append(mensaje + "\n");
+    }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -199,6 +212,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         labelArbolesDisponibles = new javax.swing.JLabel();
         BtnAgregarPersonaje = new javax.swing.JButton();
         BtnAvanzarCiclo = new javax.swing.JButton();
+        comboBoxPersonaje = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Aldea Juego");
@@ -221,6 +235,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             .addGap(0, 600, Short.MAX_VALUE)
         );
 
+        jTextArea1.setEditable(false);
         jTextArea1.setBackground(new java.awt.Color(153, 153, 153));
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -514,6 +529,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         BtnAvanzarCiclo.setText("Avanzar ciclo");
         BtnAvanzarCiclo.addActionListener(this::BtnAvanzarCicloActionPerformed);
 
+        comboBoxPersonaje.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Automático", "Constructor", "Guardián", "Cazador", "Leñador", "Agricultor" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -533,8 +550,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addComponent(BtnAgregarPersonaje))
+                                .addComponent(BtnAgregarPersonaje)
+                                .addGap(18, 18, 18)
+                                .addComponent(comboBoxPersonaje, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
@@ -549,7 +567,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(BtnAvanzarCiclo, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
-                    .addComponent(BtnAgregarPersonaje, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(BtnAgregarPersonaje, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(comboBoxPersonaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -566,6 +586,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private void BtnAgregarPersonajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAgregarPersonajeActionPerformed
         // TODO add your handling code here:
         //Crear personaje
+        aldea.agregarPersonaje(obtenerPersonajeSeleccionado());
     }//GEN-LAST:event_BtnAgregarPersonajeActionPerformed
 
     /**
@@ -575,6 +596,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnAgregarPersonaje;
     private javax.swing.JButton BtnAvanzarCiclo;
+    private javax.swing.JComboBox<String> comboBoxPersonaje;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;

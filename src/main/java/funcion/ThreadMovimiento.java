@@ -1,5 +1,7 @@
 package funcion;
 
+import java.awt.Point;
+
 public class ThreadMovimiento extends Thread {
     private Personaje personaje;
     private boolean running;
@@ -13,14 +15,16 @@ public class ThreadMovimiento extends Thread {
     public void run() {
         int currentX;
         int currentY;
+        Point puntoOriginal = personaje.getLabelGUI().getLocation();
         while (running) {
             try {
-                if (personaje.getLabelGUI().getLocation().equals(personaje.getObjetivo())) {
+                if (personaje.getLabelGUI().getLocation().equals(personaje.getObjetivo()) && !personaje.getObjetivo().equals(puntoOriginal)) {
                     // El personaje ha llegado a su objetivo, puede realizar una acción o determinar un nuevo objetivo
                     //personaje.realizarAccion();
                     System.out.println(personaje.getNombre() + " ha llegado a su objetivo en (" + personaje.getObjetivo().x + ", " + personaje.getObjetivo().y + ")");
                     Thread.sleep(2000); // Simula el tiempo que tarda en realizar la acción
                     //Volver a posición inicial
+                    personaje.setObjetivo(puntoOriginal);
                 }
                 Thread.sleep(1000); // Simula el tiempo entre movimientos
                 currentX = personaje.getLabelGUI().getX();
@@ -30,7 +34,7 @@ public class ThreadMovimiento extends Thread {
                 } else if (currentX > personaje.getObjetivo().x) {
                     currentX -= personaje.getAldea().getVentana().getLABEL_SIZE(); // Mueve a la izquierda
                 } else if (currentY < personaje.getObjetivo().y) {
-                    currentY += personaje.getAldea().getVentana().getLABEL_SIZE()   ; // Mueve hacia abajo
+                    currentY += personaje.getAldea().getVentana().getLABEL_SIZE(); // Mueve hacia abajo
                 } else if (currentY > personaje.getObjetivo().y) {
                     currentY -= personaje.getAldea().getVentana().getLABEL_SIZE(); // Mueve hacia arriba
                 }

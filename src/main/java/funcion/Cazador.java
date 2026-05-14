@@ -1,6 +1,5 @@
 package funcion;
 
-import java.awt.Point;
 
 public class Cazador extends Personaje {
 
@@ -42,14 +41,17 @@ public class Cazador extends Personaje {
         if (this.getAldea().getAnimalesActivos().size() > 0 && this.getEnergia() >= 25) {
             // Objetivo: atacar animal (podría ser la posición del animal más cercano o alguna otra lógica)
             this.setObjetivo(this.getAldea().obtenerAnimalCercano(this.getLabelGUI().getLocation()));
+            this.setAccionActual("atacar");
         }
         else if (this.getEnergia() >= 10) {
             // Objetivo: patrullar (podría ser una ruta predefinida o alguna otra lógica)
-            //this.setObjetivo(this.getAldea().obtenerPuntoPatrulla(this.getLabelGUI().getLocation()));
+            this.setObjetivo(this.getAldea().obtenerPuntoPatrulla(this.getLabelGUI().getLocation()));
+            this.setAccionActual("patrullar");
         }
         else {
             // Objetivo: descansar
             this.setObjetivo(this.getLabelGUI().getLocation()); // Podría ser una posición específica para descansar
+            this.setAccionActual("descansar");
         }
     }
 

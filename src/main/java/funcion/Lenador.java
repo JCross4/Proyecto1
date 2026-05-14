@@ -39,11 +39,13 @@ public class Lenador extends Personaje {
 2. Si no quedan árboles, descansa. */
         if (this.getAldea().getArbolesDisponibles() > 0 && this.getEnergia() >= 20) {
             // Objetivo: cortar árbol (podría ser la posición del árbol más cercano o alguna otra lógica)
-            //this.setObjetivo(this.getAldea().obtenerArbolCercano(this.getLabelGUI().getLocation()));
+            this.setObjetivo(this.getAldea().obtenerArbolCercano(this.getLabelGUI().getLocation()));
+            this.setAccionActual("cortar");
         }
         else {
             // Objetivo: descansar
             this.setObjetivo(this.getLabelGUI().getLocation()); // Podría ser una posición específica para descansar
+            this.setAccionActual("descansar");
         }
     }
 
