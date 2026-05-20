@@ -89,6 +89,34 @@ public class Aldea {
         }
     }
 
+    public void eliminarPersonaje(Personaje personaje) {
+        //TODO Implementar lógica para eliminar un personaje de la aldea, por ejemplo, cuando muere o es eliminado por un animal
+        personajes.remove(personaje);
+        ventana.eliminarLabel(personaje.getLabelGUI());
+        detenerThreadMovimiento(personaje);
+    }
+
+    public void eliminarArbol(JLabel labelArbol) {
+        //TODO Implementar lógica para eliminar un árbol de la aldea, por ejemplo, cuando es talado por un leñador
+        labelArboles.remove(labelArbol);
+        ventana.eliminarLabel(labelArbol);
+    }
+
+    public void detenerThreadMovimiento(Personaje personaje) {
+        for (ThreadMovimiento thread : hilosMovimiento) {
+            if (thread.getPersonaje() == personaje) {
+                thread.stopThread();
+                break;
+            }
+        }
+    }
+
+    public void actualizarLabelsParcelas(){
+        for (Parcela parcela : getParcelasCultivo()){
+            ventana.actualizarLabel(parcela.getLabelGUI(), parcela.getNombre().substring(0, 1) + parcela.getNombre().substring(parcela.getNombre().length() - 1) + " T: " + parcela.getCiclosParaCosechar());
+        }
+    }
+
     public void crearPersonajesIniciales() {
         for (int i = 0; i < AGRICULTORES_INICIALES; i++) {
             Personaje nuevoPersonaje = crearPersonaje("agricultor");
@@ -124,7 +152,7 @@ public class Aldea {
 
     public Parcela crearParcelaCultivo() {
         //TODO Implementar lógica para crear una nueva parcela de cultivo
-        return new Parcela("Parcela de Cultivo" + (parcelasCultivo.size() + 1));
+        return new Parcela("Parcela de Cultivo" + (parcelasCultivo.size() + 1), this);
     }
 
     public Animal crearAnimal(String tipo){
@@ -199,12 +227,13 @@ public class Aldea {
         animal.setObjetivo(new Point(xObj, yObj));
     }
 
-    public Point obtenerAnimalCercano(Point punto){
+    public Animal obtenerAnimalCercano(Point punto){
         //TODO Implementar lógica para determinar el objetivo del personaje según su tipo y la situación actual de la aldea
         //Ejemplo: un agricultor podría dirigirse a una parcela de cultivo, un cazador a un animal activo, etc.
         if (animalesActivos.size() == 0) {
             return null; // Podría ser una posición específica para descansar o alguna otra lógica
         }
+        Animal animalCercano = null;
         int x = punto.x;
         int y = punto.y;
         int xObj = 9999;
@@ -217,38 +246,38 @@ public class Aldea {
             if ((absx + absy) < (objx + objy)) {
                 xObj = animal.getLabelGUI().getLocation().x;
                 yObj = animal.getLabelGUI().getLocation().y;
+                animalCercano = animal;
             }
         }
-        return new Point(xObj, yObj);
+        return animalCercano;
     }
 
-    public Point obtenerAnimalMasFuerte(){
+    public Animal obtenerAnimalMasFuerte(){
         //TODO Implementar lógica para determinar el objetivo del personaje según su tipo y la situación actual de la aldea
         //Ejemplo: un agricultor podría dirigirse a una parcela de cultivo, un cazador a un animal activo, etc.
         if (animalesActivos.size() == 0) {
             return null; // Podría ser una posición específica para descansar o alguna otra lógica
         }
-        int xObj = 9999;
-        int yObj = 9999;
+        Animal animalMasFuerte = null;
         int maxFuerza = -1;
         for (Animal animal : animalesActivos) {
             if (animal.getFuerzaAtaque() > maxFuerza) {
                 maxFuerza = animal.getFuerzaAtaque();
-                xObj = animal.getLabelGUI().getLocation().x;
-                yObj = animal.getLabelGUI().getLocation().y;
+                animalMasFuerte = animal;
             }
         }
-        return new Point(xObj, yObj);
+        return animalMasFuerte;
     }
 
-    public Point obtenerArbolCercano(Point punto){
+    public Point obtenerArbolCercano(Lenador lenador){
         //TODO Implementar lógica para determinar el objetivo del personaje según su tipo y la situación actual de la aldea
         //Ejemplo: un agricultor podría dirigirse a una parcela de cultivo, un cazador a un animal activo, etc.
         if (arbolesDisponibles == 0) {
             return null; // Podría ser una posición específica para descansar o alguna otra lógica
         }
-        int x = punto.x;
-        int y = punto.y;
+        
+        int x = lenador.getLabelGUI().getLocation().x;
+        int y = lenador.getLabelGUI().getLocation().y;
         int xObj = 9999;
         int yObj = 9999;
         for (JLabel labelArbol : labelArboles) {
@@ -259,6 +288,8 @@ public class Aldea {
             if ((absx + absy) < (objx + objy)) {
                 xObj = labelArbol.getLocation().x;
                 yObj = labelArbol.getLocation().y;
+                lenador.setArbolObjetivo(labelArbol);
+
             }
         }
         return new Point(xObj, yObj);
@@ -268,7 +299,17 @@ public class Aldea {
         //TODO Implementar lógica para determinar el objetivo del personaje según su tipo y la situación actual de la aldea
         //Ejemplo: un agricultor podría dirigirse a una parcela de cultivo, un cazador a un animal activo, etc.
         //Podría ser una ruta predefinida o alguna otra lógica
-        return new Point(ventana.getLABEL_SIZE() * 7, ventana.getLABEL_SIZE() * 3); // Ejemplo de punto de patrulla
+        return new Point(ventana.getLABEL_SIZE() * 4, ventana.getLABEL_SIZE() * 7); // Ejemplo de punto de patrulla
+    }
+
+    public TorreDefensa obtenerTorreDañada(){
+        for (TorreDefensa torre : this.getTorres()) {
+            if (torre.getResistenciaActual() < torre.getResistenciaMaxima()) {
+                // Objetivo: reparar torre
+                return torre;
+            }
+        }
+        return null;
     }
 
     public void iniciarThreadsMovimiento() {
@@ -325,21 +366,48 @@ public class Aldea {
     public void simularCiclo() {
         
         //TODO Implementar lógica para simular un ciclo completo de la aldea, incluyendo las acciones de personajes, animales y estructuras, así como la verificación de condiciones de victoria y derrota
-        
+        //Orden de acciones
+        /*Personajes
+        Constructores. - Agricultores. - Leñadores. - Cazadores. - Guardiánes
+        Actualizar cultivos sembrados.  
+        Generar animales.
+        Disparos de torres o personajes de defensa.  
+        Ataque de animales sobrevivientes.  
+        Alimentar personajes.  
+        Actualizar salud y energía.  
+        Verificar condiciones para adquirir un nuevo habitante.  
+        Si el usuario decide adquirirlo y existen los recursos, registrarlo.  
+        Eliminar animales muertos.  
+        Mostrar resumen del ciclo
+        */
+        //TODO 1 Acciones guardianes
+
         //Ciclo principal de la simulación
         if (cicloActual <= MAX_CICLOS) {
             //TODO Realizar acciones segun el orden determinado
             cicloActual++;
             ventana.agregarLog("\nCiclo Actual:" + cicloActual);
             ventana.actualizarRecursos();
+
             for (Personaje personaje : personajes){ //Los personajes realizan sus acciones y entonces cada uno determina su objetivo
                 if (personaje.estaVivo()) {
                     //personaje.realizarAccion();
                     personaje.determinarObjetivo();
                     ventana.agregarLog(personaje.getNombre() + " se dirige a " + personaje.getObjetivo());
+                    
                 }
             }
+            //Esperar a que todos los personajes hayan completado su accion
+            //Actualizar parcelas cultivadas
+            for (Parcela parcela : parcelasCultivo) {
+                parcela.cuidar();
+            }
+            actualizarLabelsParcelas();
+            //Generar animales
             verificarCrearAnimal();
+            //Disparos de torres o personajes de defensa
+            //Ataque de animales sobrevivientes
+
             if(verificarCondicionesDerrota()) {
                 ventana.agregarLog("¡Derrota! La aldea ha caído.");
             }
@@ -436,6 +504,13 @@ public class Aldea {
             ventana.actualizarRecursos();
             ventana.deshabilitarAgregarPersonaje();
     }
+
+    public void agregarTorre() {
+        TorreDefensa nuevaTorre = crearTorreDefensa();
+        torres.add(nuevaTorre);
+        ventana.crearLabelTorre(nuevaTorre);
+        ventana.actualizarRecursos();
+    }
         
 
     public VentanaPrincipal getVentana() {
@@ -527,6 +602,14 @@ public class Aldea {
 
     public void setTurnosSinComida(int turnosSinComida) {
         this.turnosSinComida = turnosSinComida;
+    }
+
+    public ArrayList<JLabel> getLabelArboles() {
+        return labelArboles;
+    }
+
+    public void setLabelArboles(ArrayList<JLabel> labelArboles) {
+        this.labelArboles = labelArboles;
     }
 
 

@@ -3,10 +3,12 @@ package funcion;
 import java.awt.Point;
 
 public class Guardian extends Personaje {
+    private Animal animalObjetivo;
+    private int dañoAtaque;
 
     public Guardian(String nombre, Aldea aldea) {
         super(nombre,"guardian", aldea);
-        //TODO Auto-generated constructor stub
+        dañoAtaque = 20;
     }
 
     @Override
@@ -18,7 +20,28 @@ public class Guardian extends Personaje {
     @Override
     public void realizarAccion() {
         // TODO realiza accion específica
-        throw new UnsupportedOperationException("Unimplemented method 'realizarAccion'");
+        //throw new UnsupportedOperationException("Unimplemented method 'realizarAccion'");
+        /*Si hay animales activos, ataca al animal con mayor fuerza de ataque.  
+2. Si no hay animales activos, vigila la entrada.  
+3. Si no tiene energía suficiente, descansa */
+    switch (getAccionActual()) {
+        case "atacar":
+            if (animalObjetivo != null) {
+                animalObjetivo.recibirDaño(getDañoAtaque()); // Reduce la salud del animal por el ataque
+                this.setEnergia(this.getEnergia() - 15); // Reduce energía por atacar
+            }
+            break;
+        case "vigilar":
+            //Vigilar ???
+            setEnergia(getEnergia()-5);
+            break;
+        case "descansar":
+            this.setEnergia(Math.min(100, this.getEnergia() + 30));
+            break;    
+        default:
+            break;
+    }
+    setAnimalObjetivo(null);
     }
 
     @Override
@@ -41,13 +64,14 @@ public class Guardian extends Personaje {
 3. Si no tiene energía suficiente, descansa */
         if (this.getAldea().getAnimalesActivos().size() > 0 && this.getEnergia() >= 30) {
             // Objetivo: atacar animal con mayor fuerza de ataque
-            this.setObjetivo(this.getAldea().obtenerAnimalMasFuerte());
+            animalObjetivo = this.getAldea().obtenerAnimalMasFuerte();
+            this.setObjetivo(animalObjetivo.getLabelGUI().getLocation());
             this.setAccionActual("atacar");
         }
         else if (this.getEnergia() >= 15) {
-            // Objetivo: vigilar la entrada (podría ser una posición específica cerca de la entrada)
-            //this.setObjetivo(this.getAldea().obtenerPuntoVigilancia());
-            this.setObjetivo(this.getLabelGUI().getLocation());
+            // Objetivo: vigilar la entrada 
+            setObjetivo(new Point(getAldea().getVentana().getLABEL_SIZE()*4, getAldea().getVentana().getLABEL_SIZE()*4));
+            
             this.setAccionActual("vigilar");
         }
         else {
@@ -55,6 +79,22 @@ public class Guardian extends Personaje {
             this.setObjetivo(this.getLabelGUI().getLocation()); // Podría ser una posición específica para descansar
             this.setAccionActual("descansar");
         }
+    }
+
+    public Animal getAnimalObjetivo() {
+        return animalObjetivo;
+    }
+
+    public void setAnimalObjetivo(Animal animalObjetivo) {
+        this.animalObjetivo = animalObjetivo;
+    }
+
+    public int getDañoAtaque() {
+        return dañoAtaque;
+    }
+
+    public void setDañoAtaque(int dañoAtaque) {
+        this.dañoAtaque = dañoAtaque;
     }
 
 

@@ -1,7 +1,10 @@
 package funcion;
 
+import javax.swing.JLabel;
 
 public class Lenador extends Personaje {
+    private JLabel arbolObjetivo;
+
 
     public Lenador(String nombre, Aldea aldea) {
         super(nombre,"lenador", aldea);
@@ -17,7 +20,19 @@ public class Lenador extends Personaje {
     @Override
     public void realizarAccion() {
         // TODO realiza accion específica
-        throw new UnsupportedOperationException("Unimplemented method 'realizarAccion'");
+        if (this.getAccionActual().equals("cortar") && this.getEnergia() >= 20) {
+            // Realiza acción de cortar árbol
+            if (this.arbolObjetivo != null) {
+                this.getAldea().eliminarArbol(this.arbolObjetivo);
+                this.getAldea().setArbolesDisponibles(this.getAldea().getArbolesDisponibles() - 1);
+                this.setEnergia(this.getEnergia() - 20); // Reduce energía por cortar
+            }
+        }
+        else if (this.getAccionActual().equals("descansar")) {
+            // Realiza acción de descansar
+            this.setEnergia(Math.min(100, this.getEnergia() + 30)); // Recupera energía al descansar
+        }
+        this.arbolObjetivo = null;
     }
 
     @Override
@@ -39,7 +54,7 @@ public class Lenador extends Personaje {
 2. Si no quedan árboles, descansa. */
         if (this.getAldea().getArbolesDisponibles() > 0 && this.getEnergia() >= 20) {
             // Objetivo: cortar árbol (podría ser la posición del árbol más cercano o alguna otra lógica)
-            this.setObjetivo(this.getAldea().obtenerArbolCercano(this.getLabelGUI().getLocation()));
+            this.setObjetivo(this.getAldea().obtenerArbolCercano(this));
             this.setAccionActual("cortar");
         }
         else {
@@ -49,6 +64,14 @@ public class Lenador extends Personaje {
         }
     }
 
+    public JLabel getArbolObjetivo() {
+        return arbolObjetivo;
+    }
 
+    public void setArbolObjetivo(JLabel arbolObjetivo) {
+        this.arbolObjetivo = arbolObjetivo;
+    }
+
+    
 
 }

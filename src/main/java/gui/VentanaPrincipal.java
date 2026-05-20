@@ -60,6 +60,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         labelVarTurnosSinComida.setText(aldea.getTurnosSinComida() + "");
     }
 
+   public void actualizarLabel(javax.swing.JLabel label, String texto){
+    label.setText(texto);
+   }
+
     public void crearLabelsIniciales(){
         
         for (Personaje p : aldea.getPersonajes()){
@@ -74,6 +78,24 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         crearLabelCerca();
     }
     
+    public void eliminarLabel(javax.swing.JLabel label){
+        mainPanel.remove(label);
+        mainPanel.repaint();
+    }
+
+    public void eliminarLabel(Point posicion){
+        try {
+            javax.swing.JLabel label = (javax.swing.JLabel) mainPanel.getComponentAt(posicion);
+            if (label != null) {
+                mainPanel.remove(label);
+                mainPanel.repaint();
+            }
+            }
+        catch (Exception e) {
+            System.out.println("No se pudo eliminar el label en la posición: " + posicion);
+        }
+    }
+
     public void crearLabelPersonaje(Personaje personaje){
         javax.swing.JLabel nuevoLabel = new javax.swing.JLabel();
         mainPanel.add(nuevoLabel);
@@ -87,6 +109,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         nuevoLabel.setBounds(LABEL_SIZE * aldea.getPersonajes().indexOf(personaje), 0, LABEL_SIZE, LABEL_SIZE);
         nuevoLabel.setBorder(BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         personaje.setObjetivo(personaje.getLabelGUI().getLocation());
+        mainPanel.setComponentZOrder(nuevoLabel, 0);
     }
 
     public void crearLabelTorre(TorreDefensa torre){
@@ -101,6 +124,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         nuevoLabel.setOpaque(true);
         nuevoLabel.setBounds(60*aldea.getTorres().indexOf(torre), LABEL_SIZE * 3, LABEL_SIZE, LABEL_SIZE);
         nuevoLabel.setBorder(BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        mainPanel.setComponentZOrder(nuevoLabel, 0);
     }
     
     public void crearLabelCerca(){
@@ -138,7 +162,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         nuevoLabel.setBackground(new java.awt.Color(100, 100, 200));
         nuevoLabel.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         nuevoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        nuevoLabel.setText(parcela.getNombre());
+        nuevoLabel.setText(parcela.getNombre().substring(0, 1) + parcela.getNombre().substring(parcela.getNombre().length() - 1) + " T: " + parcela.getCiclosParaCosechar());
         nuevoLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         nuevoLabel.setOpaque(true);
         nuevoLabel.setBounds(LABEL_SIZE * aldea.getParcelasCultivo().indexOf(parcela), LABEL_SIZE * 2, LABEL_SIZE, LABEL_SIZE);

@@ -2,6 +2,7 @@ package funcion;
 
 
 public class Agricultor extends Personaje {
+    private Parcela parcelaObjetivo;
 
     public Agricultor(String nombre, Aldea aldea) {
         super(nombre, "agricultor", aldea);
@@ -17,7 +18,39 @@ public class Agricultor extends Personaje {
     @Override
     public void realizarAccion() {
         // TODO realiza accion específica
-        throw new UnsupportedOperationException("Unimplemented method 'realizarAccion'");
+        //throw new UnsupportedOperationException("Unimplemented method 'realizarAccion'");
+        /*Si existe una parcela vacía, siembra una parcela.  
+2. Si existe una parcela sembrada lista para cosechar, cosecha.  
+3. Si todas las parcelas están ocupadas pero ninguna lista para cosechar, cuida cultivos.  
+4. Si no puede hacer ninguna acción anterior, descansa.  */
+        getAldea().getVentana().agregarLog("El agricultor realiza la acción " + getAccionActual());
+        switch (getAccionActual()) {
+            case "sembrar":
+                // Acción de sembrar
+                parcelaObjetivo.cultivar();
+                this.setEnergia(this.getEnergia() - 15); // Reduce energía por sembrar
+                
+                break;
+            case "cosechar":
+                // Acción de cosechar
+                parcelaObjetivo.cosechar();
+                this.setEnergia(this.getEnergia() - 15); // Reduce energía por cose
+                break;
+            case "cuidar":
+                // Acción de cuidar
+                parcelaObjetivo.cuidar();
+                this.setEnergia(this.getEnergia() - 10); // Reduce energía por cuidar
+                break;
+            case "descansar":
+                // Acción de descansar
+                this.setEnergia(Math.min(100, this.getEnergia() + 30)); // Recupera energía al descansar
+                break;
+            default:
+                break;
+        }
+        getAldea().actualizarLabelsParcelas();
+        parcelaObjetivo = null;
+
     }
 
     @Override
@@ -42,7 +75,7 @@ public class Agricultor extends Personaje {
         Parcela parcelaParaSembrar = null;
         Parcela parcelaParaCosechar = null;
         Parcela parcelaParaCuidar = null;
-        for (Parcela parcela : this.getAldea().getParcelasCultivo()) {
+        for (Parcela parcela : this.getAldea().getParcelasCultivo().reversed()) {
             if (parcela.getEstado().equals("vacía")) {
                 // Objetivo: sembrar parcela
                 parcelaParaSembrar = parcela;
@@ -59,15 +92,18 @@ public class Agricultor extends Personaje {
         if (parcelaParaSembrar != null && this.getEnergia() >= 15) {
             this.setObjetivo(parcelaParaSembrar.getLabelGUI().getLocation());
             this.setAccionActual("sembrar");
+            parcelaObjetivo = parcelaParaSembrar;
         }
         else if (parcelaParaCosechar != null && this.getEnergia() >= 15) {
             this.setObjetivo(parcelaParaCosechar.getLabelGUI().getLocation());
             this.setAccionActual("cosechar");
+            parcelaObjetivo = parcelaParaCosechar;
         }
         else if (parcelaParaCuidar != null && this.getEnergia() >= 10) {
             // Objetivo: cuidar cultivos (podría ser la parcela con más ciclos para cosechar o alguna otra lógica)
             this.setObjetivo(parcelaParaCuidar.getLabelGUI().getLocation());
             this.setAccionActual("cuidar");
+            parcelaObjetivo = parcelaParaCuidar;
         }
         else {
             // Objetivo: descansar
